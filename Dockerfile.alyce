@@ -1,0 +1,40 @@
+FROM kremlinkev/7dtd:latest
+
+LABEL maintainer="kremlinkev <kevin@mancu.so>"
+
+ARG DEBIAN_FRONTEND=noninteractive
+
+USER root
+
+RUN apt-get update \
+    && apt-get install -y git rsync curl unzip
+
+RUN git clone https://gitlab.com/KhaineGB/darknessfallsa19server.git /tmp/df
+
+RUN rsync -av --exclude='.git/' /tmp/df/ /steam/7dtd \
+    && rm -rf /tmp/df/ \
+    && find /steam/7dtd/Mods/0-DarknessFallsCore/Worlds -type d -exec ln -s {} /steam/7dtd/Data/Worlds \;
+
+RUN curl -o /tmp/mm.zip https://mischiefmakerapp.com/app/MischiefMakerMod-v7.zip \
+    && unzip /tmp/mm.zip -d /steam/7dtd/Mods \
+    && rm /tmp/mm.zip
+
+RUN curl -Lo /tmp/windows.zip 'https://docs.google.com/uc?export=download&id=1aatbt3ePnd7C6nBadLdwnQQ9wlxnl0Fk' \
+    && unzip /tmp/windows.zip -d /steam/7dtd/Mods \
+    && rm /tmp/windows.zip
+
+RUN curl -Lo /tmp/doors.zip 'https://docs.google.com/uc?export=download&id=1uV8y5kl2n4cRerpbkr2VW0QcBNRvtLAV' \
+    && unzip /tmp/doors.zip -d /steam/7dtd/Mods \
+    && rm /tmp/doors.zip
+
+RUN apt-get purge -y git rsync curl unzip\
+    && apt-get -y autoremove \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN chown -R steam: /steam
+
+USER steam
+ENV USER=steam
+ENV HOME=/steam
+
+CMD /start.sh
