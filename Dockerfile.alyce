@@ -31,7 +31,8 @@ RUN apt-get purge -y git rsync curl unzip\
     && apt-get -y autoremove \
     && rm -rf /var/lib/apt/lists/*
 
-RUN chown -R steam: /steam
+# doing find since chown -R seems to cause dockerhub run out of Disk.
+RUN find /steam -exec chown steam: {} \;
 
 USER steam
 ENV USER=steam
