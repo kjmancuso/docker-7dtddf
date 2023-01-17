@@ -9,7 +9,7 @@ USER root
 RUN apt-get update \
     && apt-get install -y git rsync curl unzip
 
-RUN git clone https://gitlab.com/KhaineGB/darknessfallsa19server.git /tmp/df
+RUN git clone https://gitlab.com/KhaineGB/darkness-falls-a20.git /tmp/df
 
 RUN rsync -av --exclude='.git/' /tmp/df/ /steam/7dtd \
     && rm -rf /tmp/df/ \
